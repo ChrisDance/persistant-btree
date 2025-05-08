@@ -1,24 +1,28 @@
-CC = clang++
-# Split into CFLAGS (compilation flags) and LDFLAGS (linker flags)
-CFLAGS = -g -I$(shell brew --prefix raylib)/include -I$(shell brew --prefix glm)/include -Iinclude
-LDFLAGS = -L$(shell brew --prefix raylib)/lib -lraylib -framework OpenGL -framework Cocoa -framework IOKit -framework CoreAudio -framework CoreVideo
-TARGET = bin 
+CC = g++
+CFLAGS = -Wall -g -std=c++11 -Iinclude
+LDFLAGS = 
+TARGET = bin
+OUTPUT_DIR = .
 
-# Use wildcard to get all .cpp files
+UNAME := $(shell uname)
+
+
 SOURCES = $(wildcard *.cpp)
-# Create object files list
 OBJECTS = $(SOURCES:.cpp=.o)
 
 all: $(TARGET)
 
-# Compile the target from object files
 $(TARGET): $(OBJECTS)
-	$(CC) $^ -o $@ $(LDFLAGS)
+	$(CC) $^ -o $(OUTPUT_DIR)/$@ $(LDFLAGS)
 
-# Pattern rule for object files - use only CFLAGS here
 %.o: %.cpp
 	$(CC) -c $< -o $@ $(CFLAGS)
 
 clean:
 	$(RM) $(TARGET) $(OBJECTS)
 
+
+$(OUTPUT_DIR):
+	mkdir -p $(OUTPUT_DIR)
+
+.PHONY: all clean
